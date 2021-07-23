@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package echeveria.sample;
+
+/**
+ * テスト用のPingPongサービス
+ */
+service PingPong {
+  /*
+   * Ping RPC
+   */
+  rpc Ping(PingRequest) returns (PingResponse);
+}
+
+message PingRequest {
+  int32 id = 1;
+}
+
+message PingResponse {
+  int32 id = 1;
+  string name = 2;
+}
+

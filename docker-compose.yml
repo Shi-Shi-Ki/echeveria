@@ -1,0 +1,57 @@
+version: "3.8"
+
+networks:
+  echeveria-nw:
+    driver: bridge
+    name: echeveria-nw
+
+volumes:
+  app_db:
+    driver: local
+
+services:
+  gateway:
+    build: ./docker/gateway
+    container_name: echeveria_gateway
+    ports:
+      - "8080:8080"
+    networks:
+      echeveria-nw:
+        aliases:
+          - echeveria-gateway
+    depends_on:
+      - app
+
+  app:
+    build:
+      context: .
+      dockerfile: ./docker/app/Dockerfile
+    container_name: echeveria_app
+    ports:
+      - "50051:5000"
+    networks:
+      echeveria-nw:
+        aliases:
+          - echeveria-app
+    environment:
+      - NODE_ENV=development
+
+  db:
+    build:
+      context: .
+      dockerfile: ./docker/database/Dockerfile
+    container_name: echeveria_db
+    networks:
+      echeveria-nw:
+        aliases:
+          - echeveria-db
+    ports:
+      - "3390:3306"
+    environment:
+      - MYSQL_DATABASE=echeveria
+      - MYSQL_ROOT_PASSWORD=echeveria
+      - MYSQL_USER=dev
+      - MYSQL_PASSWORD=devdevdev
+    volumes:
+      - app_db:/var/lib/mysql
+
