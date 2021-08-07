@@ -2,14 +2,15 @@ import { Module } from '@nestjs/common';
 import { LoggerModule } from "../util/logger/logger.module"
 import { PingpongController } from '../controllers/pingpong.controller';
 import { PingpongService } from '../services/pingpong.service';
-import { UsersModule } from '../modules/users.module'
+import { RepositoryModule } from "../infrastructure/echeveria/repository/repository.module"
 
 @Module({
   imports: [
-    UsersModule,
+    RepositoryModule,
     LoggerModule,
   ],
   controllers: [PingpongController],
   providers: [PingpongService],
 })
 export class PingpongModule {}
+

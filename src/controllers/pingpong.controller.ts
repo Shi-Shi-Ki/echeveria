@@ -4,7 +4,7 @@ import { Metadata } from "grpc"
 import { Observable } from "rxjs/internal/Observable"
 import { PingRequest, PingResponse, PingPongControllerMethods } from "../gen/pingpong"
 import { Logger } from "../util/logger/logger.service"
-import { UsersService } from "../services/users.service"
+import { UsersRepository } from "../infrastructure/echeveria/repository/users.repository"
 import { PingpongService } from "../services/pingpong.service"
 import { Inject } from "@nestjs/common/decorators/core/inject.decorator"
 
@@ -13,7 +13,7 @@ import { Inject } from "@nestjs/common/decorators/core/inject.decorator"
 export class PingpongController {
   constructor(
     private logger: Logger,
-    private users: UsersService,
+    private users: UsersRepository,
     private pingpongService: PingpongService
   ) {}
   @GrpcMethod('PingPong', 'ping')
