@@ -1,4 +1,6 @@
 import { UsersEntity } from "./users.entity"
+import { ThreadsEntity } from "./threads.entity"
+import { MessagesEntity } from "./messages.entity"
 
 /*
  * [注意]
@@ -43,5 +45,7 @@ import { UsersEntity } from "./users.entity"
  */
 export const AllModels = [
   UsersEntity,
+  ThreadsEntity,
+  MessagesEntity,
 ]
 

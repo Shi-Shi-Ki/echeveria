@@ -18,6 +18,8 @@ import { PingpongService } from './services/pingpong.service';
         __dirname + '/**/*.entity{.ts,.js}'
       ],
       synchronize: true,
+      logging: true,
+      logger: "file",
     }),
     PingpongModule,
   ],
