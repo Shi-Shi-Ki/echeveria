@@ -16,25 +16,23 @@ import { Repository } from 'typeorm'
 type Constructor<C> = new (...args: any[]) => C
 
 export interface IBaseRepository<T> {
-  readonly repo: Repository<T>
   findAll: () => Promise<T[]>
+  findById: (id: number) => Promise<T | undefined>
+}
+
+class CoreRepository<T> extends Repository<T> {
+  dummyMethod(v: string) {
+    console.log(v)
+  }
 }
 
 export function BaseRepository<T>(entity: Constructor<T>): Type<IBaseRepository<T>> {
-  class BaseRepositoryHost implements IBaseRepository<T> {
-    constructor(
-      @InjectRepository(entity)
-      public readonly repo: Repository<T>
-    ) {}
-
+  class BaseRepositoryHost extends Repository<T> implements IBaseRepository<T> {
     findAll(): Promise<T[]> {
-      return this.repo.find()
+      return this.find()
     }
-    findOne(id: string): Promise<T | undefined> {
-      return this.repo.findOne(id);
-    }
-    async remove(id: string): Promise<void> {
-      await this.repo.delete(id);
+    findById(id: number): Promise<T | undefined> {
+      return this.findOne(id)
     }
   }
   return BaseRepositoryHost

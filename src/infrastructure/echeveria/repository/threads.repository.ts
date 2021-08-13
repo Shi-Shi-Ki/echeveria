@@ -1,8 +1,10 @@
 import { Injectable } from '@nestjs/common'
-import { ThreadsEntity } from '../typeorm/threads.entity'
-import { BaseRepository } from './base.repository'
+import { ThreadsEntity } from '../entity/threads.entity'
+import { BaseRepository } from '../../typeorm/repository/base.repository'
+import { EntityRepository } from 'typeorm'
 
 @Injectable()
+@EntityRepository(ThreadsEntity)
 export class ThreadsRepository extends BaseRepository(ThreadsEntity) {
 }
 
