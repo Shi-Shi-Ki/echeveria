@@ -16,8 +16,6 @@ import { Connection } from 'typeorm'
 export class PingpongController {
   constructor(
     private logger: Logger,
-    private users: UsersRepository,
-    private threads: ThreadsRepository,
     private pingpongService: PingpongService,
     private readonly connection: Connection,
   ) {}
@@ -29,6 +27,13 @@ export class PingpongController {
 
 this.logger.error(`aaa`)
 const res = async () => {
+  // out Transaction
+  const threadsNt = this.connection.getCustomRepository(ThreadsRepository)
+  threadsNt.findAll().then(r => {
+    this.logger.error(`(out transaction) findAll thread data.`)
+    console.log(r)
+  })
+  // on Transaction
   this.connection.transaction(async manager => {
     const users = manager.getCustomRepository(UsersRepository)
     const threads = manager.getCustomRepository(ThreadsRepository)
