@@ -15,15 +15,14 @@ import { Repository } from 'typeorm'
  */
 type Constructor<C> = new (...args: any[]) => C
 
+/*
+ * TypeORM.RepositoryのCRUDメソッド一覧
+ * https://typeorm.io/#/repository-api
+ * https://github.com/typeorm/typeorm/blob/master/src/repository/Repository.ts
+ */
 export interface IBaseRepository<T> {
   findAll: () => Promise<T[]>
   findById: (id: number) => Promise<T | undefined>
-}
-
-class CoreRepository<T> extends Repository<T> {
-  dummyMethod(v: string) {
-    console.log(v)
-  }
 }
 
 export function BaseRepository<T>(entity: Constructor<T>): Type<IBaseRepository<T>> {
