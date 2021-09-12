@@ -1,22 +1,23 @@
-import { Controller } from '@nestjs/common';
+import { Controller, Get } from '@nestjs/common';
 import { GrpcMethod } from "@nestjs/microservices/decorators/message-pattern.decorator"
 import { Inject } from "@nestjs/common/decorators/core/inject.decorator"
 import { Metadata } from "grpc"
 import { Observable } from "rxjs/internal/Observable"
-import { PingRequest, PingResponse, PingPongControllerMethods } from "../gen/pingpong"
-import { PingpongService } from "../services/pingpong.service"
-import { Logger } from "../util/logger/logger.service"
+import { PingRequest, PingResponse, PingPongControllerMethods } from "../../gen/pingpong"
+import { PingpongService } from "./pingpong.service"
+import { Logger } from "../../util/logger/logger.service"
 import { Connection } from 'typeorm'
 
-import { UsersRepository } from "../infrastructure/echeveria/repository/users.repository"
-import { ThreadsRepository } from "../infrastructure/echeveria/repository/threads.repository"
-import { MessagesRepository } from "../infrastructure/echeveria/repository/messages.repository"
+import { UsersRepository } from "../../infrastructure/echeveria/repository/users.repository"
+import { ThreadsRepository } from "../../infrastructure/echeveria/repository/threads.repository"
+import { MessagesRepository } from "../../infrastructure/echeveria/repository/messages.repository"
 
-import { ThreadByMessagesQueryBuilder } from "../infrastructure/echeveria/querybuilder/threadByMessages.querybuilder"
-import { ThreadByMessages } from "../infrastructure/echeveria/dto/threadByMessages.dto"
-import { MessagesEntity } from "../infrastructure/echeveria/entity/messages.entity"
+import { ThreadByMessagesQueryBuilder } from "../../infrastructure/echeveria/querybuilder/threadByMessages.querybuilder"
+import { ThreadByMessages } from "../../infrastructure/echeveria/dto/threadByMessages.dto"
+import { MessagesEntity } from "../../infrastructure/echeveria/entity/messages.entity"
 
-@Controller('pingpong')
+//@Controller('pingpong')
+@Controller()
 @PingPongControllerMethods()
 export class PingpongController {
   constructor(
@@ -25,12 +26,13 @@ export class PingpongController {
     private readonly connection: Connection,
   ) {}
   @GrpcMethod('PingPong', 'ping')
+  //@Get('ping')
   ping(
     request: PingRequest,
     metadata?: Metadata
   ): Promise<PingResponse> | PingResponse {
 
-this.logger.error(`aaa`)
+this.logger.error(`AAA`)
 const res = async () => {
   // out Transaction
   const threadsNt = this.connection.getCustomRepository(ThreadsRepository)
@@ -79,7 +81,7 @@ const res = async () => {
   })
 }
 res()
-this.logger.error(`bbb`)
+this.logger.error(`BBB`)
 
     return {
       id: request.id,
