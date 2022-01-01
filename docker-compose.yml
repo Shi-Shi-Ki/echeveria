@@ -11,10 +11,14 @@ volumes:
 
 services:
   gateway:
-    build: ./docker/gateway
+    build:
+      context: .
+      dockerfile: ./docker/gateway/Dockerfile
     container_name: echeveria_gateway
     ports:
-      - "8080:8080"
+      - "8081:8081" # (browser_test) host->envoy_app
+      - "8082:8082" # envoy_app
+      - "9901:9901" # envoy_admin
     networks:
       echeveria-nw:
         aliases:
@@ -26,6 +30,7 @@ services:
     build:
       context: .
       dockerfile: ./docker/app/Dockerfile
+    tty: true
     container_name: echeveria_app
     ports:
       - "50051:5000"
@@ -40,6 +45,7 @@ services:
     build:
       context: .
       dockerfile: ./docker/database/Dockerfile
+    tty: true
     container_name: echeveria_db
     networks:
       echeveria-nw:
@@ -55,3 +61,13 @@ services:
     volumes:
       - app_db:/var/lib/mysql
 
+  inspection:
+    build:
+      context: .
+      dockerfile: ./docker/inspection/Dockerfile
+    tty: true
+    container_name: echeveria_inspection
+    networks:
+      echeveria-nw:
+        aliases:
+          - echeveria-inspection

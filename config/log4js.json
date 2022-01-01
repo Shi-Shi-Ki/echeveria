@@ -1,0 +1,34 @@
+{
+  "appenders": {
+    "console": {
+      "type": "console"
+    },
+    "system": {
+      "type": "dateFile",
+      "filename": "logs/system.log"
+    },
+    "applicationLog": {
+      "type": "dateFile",
+      "filename": "logs/app.log"
+    },
+    "dbQueryLog": {
+      "type": "dateFile",
+      "filename": "logs/query.log"
+    }
+  },
+  "categories": {
+    "default": {
+      "appenders": ["console"],
+      "level": "all"
+    },
+    "app": {
+      "appenders": ["applicationLog"],
+      "level": "all"
+    },
+    "query": {
+      "appenders": ["dbQueryLog"],
+      "level": "all"
+    }
+  }
+}
+

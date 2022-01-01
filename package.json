@@ -10,11 +10,15 @@
     "genPb": "sh generate.sh",
     "prebuild": "rimraf dist",
     "build": "nest build",
-    "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
+    "build:dev": "NODE_ENV=dev nest build --webpack --webpackPath ./webpack.dev.js",
+    "build:prod": "NODE_ENV=prod nest build --webpack --webpackPath ./webpack.prod.js",
+    "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\" \"libs/**/*.ts\"",
     "start": "nest start",
     "start:dev": "LOGGER_LEVEL=debug nest start --watch",
-    "start:debug": "LOGGER_LEVEL=debug nest start --debug --watch",
-    "start:prod": "node dist/main",
+    "start:app:dev": "nest start app -c ./nest-cli.json --watch",
+    "start:webp": "webpack --config webpack.config.js",
+    "start:app:debug": "NODE_ENV=dev nest start app -c ./nest-cli.json --debug --watch LOGGER_LEVEL=debug",
+    "start:app:prodp": "NODE_ENV=prod node dist/server",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "jest",
     "test:watch": "jest --watch",
@@ -25,12 +29,18 @@
   "dependencies": {
     "@grpc/proto-loader": "^0.6.3",
     "@nestjs/common": "^7.6.18",
+    "@nestjs/config": "^1.1.5",
     "@nestjs/core": "^7.6.18",
     "@nestjs/microservices": "^7.6.18",
     "@nestjs/platform-express": "^7.6.18",
     "@nestjs/sequelize": "^8.0.0",
     "@nestjs/typeorm": "^7.1.5",
+    "@types/config": "0.0.39",
+    "@types/log4js": "^2.3.5",
     "@types/validator": "^13.6.3",
+    "@types/webpack-env": "^1.16.2",
+    "config": "^3.3.6",
+    "copy-webpack-plugin": "^9.0.1",
     "grpc": "^1.24.10",
     "grpc-tools": "^1.11.2",
     "grpc_tools_node_protoc_ts": "^5.3.0",
@@ -38,6 +48,7 @@
     "log4js": "^6.3.0",
     "luxon": "^1.27.0",
     "mysql2": "^2.2.5",
+    "protoc-gen-grpc-web": "^1.3.0",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^6.6.6",
@@ -46,7 +57,12 @@
     "ts-proto": "^1.82.0",
     "typeorm": "^0.2.34",
     "typeorm-seeding": "^1.6.1",
-    "validator": "^13.6.0"
+    "validator": "^13.6.0",
+    "webpack": "^5.0.0",
+    "webpack-cli": "^4.9.0",
+    "webpack-node-externals": "^3.0.0",
+    "dotenv-webpack": "^7.0.3",
+    "webpack-merge": "^5.7.3"
   },
   "devDependencies": {
     "@nestjs/cli": "^7.6.0",
@@ -66,9 +82,8 @@
     "prettier": "^2.2.1",
     "supertest": "^6.1.3",
     "ts-jest": "^26.5.4",
-    "ts-loader": "^8.0.18",
+    "ts-loader": "^8.3.0",
     "ts-node": "^9.1.1",
-    "tsconfig-paths": "^3.9.0",
     "typescript": "^4.2.3"
   },
   "jest": {
@@ -77,7 +92,7 @@
       "json",
       "ts"
     ],
-    "rootDir": "src",
+    "rootDir": ".",
     "testRegex": ".*\\.spec\\.ts$",
     "transform": {
       "^.+\\.(t|j)s$": "ts-jest"
@@ -85,7 +100,15 @@
     "collectCoverageFrom": [
       "**/*.(t|j)s"
     ],
-    "coverageDirectory": "../coverage",
-    "testEnvironment": "node"
+    "coverageDirectory": "./coverage",
+    "testEnvironment": "node",
+    "roots": [
+      "<rootDir>/src/",
+      "<rootDir>/libs/"
+    ],
+    "moduleNameMapper": {
+      "@app/logger/(.*)": "<rootDir>/libs/logger/src/$1",
+      "@app/logger": "<rootDir>/libs/logger/src"
+    }
   }
 }

@@ -2,12 +2,12 @@ import { Module } from '@nestjs/common';
 import { Transport } from "@nestjs/microservices/enums/transport.enum"
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { ClientsModule } from "@nestjs/microservices/module/clients.module"
-import { AppController } from './app.controller';
-import { PingpongModule } from './usecase/pingpong/pingpong.module';
-import { PingpongController } from './usecase/pingpong/pingpong.controller';
-import { PingpongService } from './usecase/pingpong/pingpong.service';
+import { PingpongModule } from './usecase/pingpong/pingpong.module'
+import { TypeOrmCustomLogger } from '@logger/typeorm/TypeOrmCustomLogger'
+import { getMetadataArgsStorage } from 'typeorm'
 import { join } from 'path'
 
+// docker内で起動する際のipは"0.0.0.0"にすること（localhostだと"address not available"というエラーが発生する）
 @Module({
   imports: [
     ClientsModule.register([
@@ -15,25 +15,24 @@ import { join } from 'path'
         name: 'PingPong',
         transport: Transport.GRPC,
         options: {
-          url: 'localhost:5000',
+          url: `${process.env.APP_HOST}:${process.env.APP_PORT}`,
           package: 'echeveria.sample',
-          protoPath: join(__dirname, "../proto/pingpong.proto"),
+          protoPath: join(__dirname, "proto/pingpong.proto"),
         },
       },
     ]),
-    TypeOrmModule.forRoot({
-      type: 'mysql',
-      host: '0.0.0.0',
-      port: 3390,
-      username: 'dev',
-      password: 'devdevdev',
-      database: 'echeveria',
-      entities: [
-        __dirname + '/**/*.entity{.ts,.js}'
-      ],
-      synchronize: true,
-      logging: true,
-      logger: "file",
+    TypeOrmModule.forRootAsync({
+      useFactory: async (): Promise<any> => ({
+        type: 'mysql',
+        host: process.env.DB_HOST,
+        port: process.env.DB_PORT,
+        username: process.env.DB_USERNAME,
+        password: process.env.DB_PASSWORD,
+        database: 'echeveria',
+        entities: getMetadataArgsStorage().tables.map(tbl => tbl.target),
+        logging: true,
+        logger: new TypeOrmCustomLogger()
+      }),
     }),
     PingpongModule,
   ],

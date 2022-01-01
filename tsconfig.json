@@ -9,14 +9,24 @@
     "target": "ES2020",
     "sourceMap": true,
     "outDir": "dist",
-    "baseUrl": "./",
+    "baseUrl": ".",
     "incremental": true,
     "allowJs": true,
     "strict": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "moduleResolution": "node",
+    "paths": {
+      "@logger/*": [
+        "libs/logger/src/*"
+      ]
+    }
   },
   "include": [
     "src/**/*",
     "test/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist"
   ]
 }

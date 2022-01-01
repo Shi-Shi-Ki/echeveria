@@ -1,10 +1,22 @@
-FROM envoyproxy/envoy-dev:c41850ce99689180727c65c3c9fa410257ff9cd9
+FROM envoyproxy/envoy-alpine:v1.14.1
 
-COPY envoy-config.yml /etc/envoy/gateway-envoy.yaml
-COPY docker-entrypoint.sh /
-RUN chmod 755 /docker-entrypoint.sh
+ENV HOME /root
+WORKDIR $HOME
 
-ENV GATEWAY_ENV="local"
-ENTRYPOINT [ "/docker-entrypoint.sh" ]
-CMD /usr/local/bin/envoy --bootstrap-version 2 -c /etc/envoy/gateway-envoy.yaml
+COPY ./gateway/envoy-config.yaml /etc/envoy/envoy-config.yaml
+COPY ./gateway/gen $HOME/gen
+COPY ./gateway/package.json $HOME/.
+COPY ./gateway/webpack.config.js $HOME/.
+COPY ./gateway/client.js $HOME/.
+COPY ./gateway/index.html $HOME/.
+COPY ./.env.dev $HOME/.
+COPY ./.env.prod $HOME/.
 
+RUN apk upgrade --update
+RUN apk add npm
+
+RUN npm install
+ENV PATH $PATH:$HOME/node_modules/.bin
+RUN npm run webpack:prod
+
+CMD /usr/local/bin/envoy -c /etc/envoy/envoy-config.yaml

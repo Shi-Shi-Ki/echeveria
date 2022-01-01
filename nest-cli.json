@@ -1,8 +1,48 @@
 {
   "collection": "@nestjs/schematics",
-  "sourceRoot": "src",
+  "monorepo": true,
+  "sourceRoot": "./",
+  "projects": {
+    "gateway": {
+      "type": "application",
+      "root": "gateway",
+      "entryFile": "main",
+      "sourceRoot": "gateway",
+      "compilerOptions": {
+        "tsConfigPath": "gateway/tsconfig.gateway.json",
+        "assets": [
+          {
+            "include": "proto/*.proto",
+            "watchAssets": true
+          }
+        ]
+      }
+    },
+    "app": {
+      "type": "application",
+      "entryFile": "main",
+      "sourceRoot": "app",
+      "compilerOptions": {
+        "tsConfigPath": "app/tsconfig.app.json",
+        "assets": [
+          {
+            "include": "proto/*.proto",
+            "watchAssets": true
+          }
+        ]
+      }
+    },
+    "logger": {
+      "type": "library",
+      "root": "libs/logger",
+      "entryFile": "index",
+      "sourceRoot": "libs/logger/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/logger/tsconfig.lib.json"
+      }
+    }
+  },
   "compilerOptions": {
-    "assets": ["**/*.proto"],
-    "watchAssets": true
+    "webpack": true
   }
 }

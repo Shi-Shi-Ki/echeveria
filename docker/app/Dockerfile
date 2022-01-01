@@ -1,18 +1,15 @@
 FROM node:14
 
-ENV APP_ROOT /usr/src/app
+ENV APP_ROOT /usr/app
 
 WORKDIR $APP_ROOT
 
-ADD package*.json tsconfig.json tsconfig.build.json yarn.lock $APP_ROOT/
+ADD package*.json tsconfig.json tsconfig.build.json webpack*.js $APP_ROOT/
 
 RUN yarn install
-# need copy command before build
 COPY . .
-RUN yarn build
+RUN yarn build:prod
 
-# public port
 EXPOSE 50051
 
-CMD ["yarn","run","start:prod"]
-
+CMD yarn start:app:prodp
